@@ -1,0 +1,16 @@
+# Original camera photos stay local; the site uses optimized WebP copies.
+/images/*.jpg
+/images/*.jpeg
+/images/*.JPG
+/images/*.JPEG
+!/images/og-preview.jpg
+
+
+
+# Large local enhancement and backup intermediates are not deployed.
+/images/scene-02-enhanced.png
+/images/scene-02-cutout-bckp.png
+/images/assets/
+/images/elements/
+/images/extracted/
+/tools/og-preview-source-*.png
