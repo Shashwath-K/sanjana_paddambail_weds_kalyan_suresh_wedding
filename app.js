@@ -92,43 +92,180 @@
   });
 
   /* =========================================================================
-     DYNAMIC 7-SECOND INTRO LOADER CONTROLLER
+     ANIME.JS CALLIGRAPHY HANDWRITING ANIMATION CONTROLLER
      ========================================================================= */
   const loader = document.querySelector('#intro-loader');
-  const skipBtn = document.querySelector('#loader-skip-btn');
+  let autoDismissTimer = null;
 
   function dismissLoader() {
     if (!loader || loader.classList.contains('loader-out')) return;
+    if (autoDismissTimer) clearTimeout(autoDismissTimer);
     loader.classList.add('loader-out');
     document.body.classList.add('invitation-ready');
-    // Ensure smooth dissolve then hide from assistive tech and rendering
+    // Ensure smooth dissolve then hide from assistive tech and trigger Scene 1
     setTimeout(() => {
       loader.setAttribute('aria-hidden', 'true');
       loader.style.display = 'none';
+      const scene1 = document.querySelector('#scene-1');
+      if (scene1) animateScene(scene1);
     }, 1150);
   }
 
-  if (loader) {
-    // Automatically transition seamlessly after 7 seconds
-    const timer = setTimeout(dismissLoader, 7000);
+  function prepareHandwritingText(selector) {
+    const el = document.querySelector(selector);
+    if (!el) return null;
+    const rawText = el.getAttribute('data-writing') || el.textContent.trim();
+    // Split into words, then each word into characters to preserve word-wrapping on mobile
+    const words = rawText.split(/\s+/);
+    el.innerHTML = words.map(word => {
+      const charsHtml = [...word].map(char => {
+        return `<span class="char-ink-wrap"><span class="char-ink">${char}</span><span class="char-glow" aria-hidden="true">${char}</span></span>`;
+      }).join('');
+      return `<span class="writing-word">${charsHtml}</span>`;
+    }).join(' ');
+    return el;
+  }
 
-    if (skipBtn) {
-      skipBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        clearTimeout(timer);
-        dismissLoader();
-      });
+  function startIntroAnimation() {
+    prepareHandwritingText('.loader-name.bride');
+    prepareHandwritingText('.loader-name.groom');
+
+    if (typeof anime === 'undefined') {
+      document.body.classList.add('no-anime');
+      autoDismissTimer = setTimeout(dismissLoader, 7000);
+      return;
     }
 
-    // Tap/click anywhere on screen allows early transition
-    loader.addEventListener('click', (e) => {
-      if (e.target.tagName !== 'BUTTON') {
-        clearTimeout(timer);
-        dismissLoader();
-      }
+    const tl = anime.timeline({
+      easing: 'easeOutCubic'
+    });
+
+    // 1. Lord Ganesha emblem & sacred invocation
+    tl.add({
+      targets: '.loader-ganesha-wrap',
+      opacity: [0, 1],
+      scale: [0.82, 1],
+      duration: 900,
+      easing: 'easeOutBack'
+    })
+    .add({
+      targets: ['.loader-kannada', '.loader-invocation'],
+      opacity: [0, 1],
+      translateY: [10, 0],
+      duration: 750,
+      delay: anime.stagger(140),
+      easing: 'easeOutQuad'
+    }, '-=350')
+    .add({
+      targets: '.loader-flourish-wrap.top-flourish',
+      opacity: [0, 1],
+      scaleX: [0.15, 1],
+      duration: 850,
+      easing: 'easeOutCubic'
+    }, '-=250')
+    .add({
+      targets: '.loader-eyebrow',
+      opacity: [0, 1],
+      letterSpacing: ['0.4em', '0.3em'],
+      duration: 650,
+      easing: 'easeOutQuad'
+    }, '-=150')
+
+    // 2. Handwriting: Sanjana Paddambail (Letter-by-letter pen stroke reveal)
+    .add({
+      targets: '.loader-name.bride .char-ink',
+      opacity: [0, 1],
+      clipPath: ['inset(0 100% 0 0)', 'inset(0 0% 0 0)'],
+      translateY: [7, 0],
+      translateX: [-3, 0],
+      rotateZ: [-3, 0],
+      duration: 380,
+      delay: anime.stagger(55),
+      easing: 'cubicBezier(0.25, 1, 0.5, 1)'
+    })
+    .add({
+      targets: '.loader-name.bride .char-glow',
+      opacity: [{ value: 0.85, duration: 130 }, { value: 0, duration: 320 }],
+      scale: [1.25, 1],
+      delay: anime.stagger(55),
+      easing: 'easeOutQuad'
+    }, '-=' + (55 * 19 + 180))
+    .add({
+      targets: '.loader-signature-flourish.bride-flourish',
+      scaleX: [0, 1],
+      opacity: [0, 0.85],
+      duration: 600,
+      easing: 'easeOutCubic'
+    }, '-=150')
+
+    // 3. "And" connector
+    .add({
+      targets: '.loader-weds',
+      opacity: [0, 1],
+      scale: [0.88, 1],
+      duration: 550,
+      easing: 'easeOutBack'
+    }, '-=100')
+
+    // 4. Handwriting: Kalyan Suresh (Letter-by-letter pen stroke reveal)
+    .add({
+      targets: '.loader-name.groom .char-ink',
+      opacity: [0, 1],
+      clipPath: ['inset(0 100% 0 0)', 'inset(0 0% 0 0)'],
+      translateY: [7, 0],
+      translateX: [-3, 0],
+      rotateZ: [-3, 0],
+      duration: 380,
+      delay: anime.stagger(58),
+      easing: 'cubicBezier(0.25, 1, 0.5, 1)'
+    })
+    .add({
+      targets: '.loader-name.groom .char-glow',
+      opacity: [{ value: 0.85, duration: 130 }, { value: 0, duration: 320 }],
+      scale: [1.25, 1],
+      delay: anime.stagger(58),
+      easing: 'easeOutQuad'
+    }, '-=' + (58 * 13 + 180))
+    .add({
+      targets: '.loader-signature-flourish.groom-flourish',
+      scaleX: [0, 1],
+      opacity: [0, 0.85],
+      duration: 600,
+      easing: 'easeOutCubic'
+    }, '-=150')
+
+    // 5. Bottom Flourish & Motto
+    .add({
+      targets: '.loader-flourish-wrap.bottom-flourish',
+      opacity: [0, 1],
+      scaleX: [0.15, 1],
+      duration: 750,
+      easing: 'easeOutCubic'
+    }, '-=150')
+    .add({
+      targets: '.loader-motto',
+      opacity: [0, 1],
+      translateY: [6, 0],
+      duration: 650,
+      easing: 'easeOutQuad'
+    }, '-=200');
+
+    // Auto-dismiss smoothly after handwriting presentation finishes
+    tl.finished.then(() => {
+      autoDismissTimer = setTimeout(dismissLoader, 1800);
+    });
+  }
+
+  if (loader) {
+    startIntroAnimation();
+
+    loader.addEventListener('click', () => {
+      dismissLoader();
     });
   } else {
     document.body.classList.add('invitation-ready');
+    const scene1 = document.querySelector('#scene-1');
+    if (scene1) animateScene(scene1);
   }
 
   /* =========================================================================
@@ -154,4 +291,5 @@
 
   updatePhotoParallax();
   updateBackdrop();
+  updateScrollProgress();
 })();
