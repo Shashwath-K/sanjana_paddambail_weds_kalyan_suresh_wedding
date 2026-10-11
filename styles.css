@@ -59,6 +59,22 @@ main {
 
 
 /* =========================================================================
+   READING SCROLL PROGRESS LINE (Gold hairline tracker)
+   ========================================================================= */
+.scroll-progress-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold-accent), #f9e6c4, var(--gold-primary));
+  z-index: 9998;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(205, 162, 78, 0.55);
+  transition: width 0.08s ease-out;
+}
+
+/* =========================================================================
    SCENE COMMON STYLES
    ========================================================================= */
 .scene {

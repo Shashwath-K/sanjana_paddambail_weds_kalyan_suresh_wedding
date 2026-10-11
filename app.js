@@ -1,6 +1,194 @@
 (() => {
   const scenes = [...document.querySelectorAll('.scene')];
   const photoScenes = [...document.querySelectorAll('.photograph')];
+  const animatedScenes = new Set();
+
+  /* =========================================================================
+     READING SCROLL PROGRESS TRACKER
+     ========================================================================= */
+  const progressBar = document.querySelector('#scroll-progress');
+  function updateScrollProgress() {
+    if (!progressBar) return;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (scrollHeight <= 0) return;
+    const progress = Math.min(1, Math.max(0, window.pageYOffset / scrollHeight));
+    progressBar.style.width = `${(progress * 100).toFixed(2)}%`;
+  }
+
+  /* =========================================================================
+     ANIME.JS SCENE SCROLL CHOREOGRAPHY
+     ========================================================================= */
+  function animateScene(scene) {
+    if (!scene || animatedScenes.has(scene.id)) return;
+    animatedScenes.add(scene.id);
+    scene.classList.add('is-settled');
+
+    if (typeof anime === 'undefined') return;
+
+    const id = scene.id;
+
+    if (id === 'scene-1') {
+      anime.timeline({ easing: 'easeOutCubic' })
+        .add({
+          targets: scene.querySelectorAll('.sacred-header .ganesha-emblem, .sacred-header .kannada-invocation, .sacred-header .invocation'),
+          opacity: [0, 1],
+          translateY: [16, 0],
+          duration: 800,
+          delay: anime.stagger(120)
+        })
+        .add({
+          targets: scene.querySelectorAll('.golden-flourish'),
+          scaleX: [0.15, 1],
+          opacity: [0, 0.88],
+          duration: 750
+        }, '-=400')
+        .add({
+          targets: scene.querySelectorAll('.wedding-eyebrow, .partner-name, .weds, .invitation-motto, .invitation-meta'),
+          opacity: [0, 1],
+          translateY: [18, 0],
+          duration: 850,
+          delay: anime.stagger(90)
+        }, '-=400');
+    } else if (id === 'scene-2') {
+      anime.timeline({ easing: 'easeOutCubic' })
+        .add({
+          targets: scene.querySelector('.temple-caption'),
+          opacity: [0, 1],
+          translateY: [24, 0],
+          duration: 900
+        })
+        .add({
+          targets: scene.querySelectorAll('.temple-caption .eyebrow, .temple-caption h2, .temple-caption p'),
+          opacity: [0, 1],
+          translateY: [14, 0],
+          duration: 700,
+          delay: anime.stagger(120)
+        }, '-=500');
+    } else if (id === 'scene-3') {
+      anime.timeline({ easing: 'easeOutCubic' })
+        .add({
+          targets: scene.querySelector('.bride-caption'),
+          opacity: [0, 1],
+          translateY: [25, 0],
+          duration: 850
+        })
+        .add({
+          targets: scene.querySelectorAll('.bride-caption .eyebrow, .bride-caption h2'),
+          opacity: [0, 1],
+          translateY: [14, 0],
+          duration: 700,
+          delay: anime.stagger(100)
+        }, '-=600')
+        .add({
+          targets: scene.querySelector('.bride-family'),
+          opacity: [0, 1],
+          translateX: [-18, 0],
+          duration: 750
+        }, '-=400')
+        .add({
+          targets: scene.querySelectorAll('.bride-caption .fun-facts li'),
+          opacity: [0, 1],
+          scale: [0.8, 1],
+          duration: 500,
+          delay: anime.stagger(80),
+          easing: 'easeOutBack'
+        }, '-=300');
+    } else if (id === 'scene-4') {
+      anime.timeline({ easing: 'easeOutCubic' })
+        .add({
+          targets: scene.querySelector('.groom-caption'),
+          opacity: [0, 1],
+          translateY: [25, 0],
+          duration: 850
+        })
+        .add({
+          targets: scene.querySelectorAll('.groom-caption .eyebrow, .groom-caption h2'),
+          opacity: [0, 1],
+          translateY: [14, 0],
+          duration: 700,
+          delay: anime.stagger(100)
+        }, '-=600')
+        .add({
+          targets: scene.querySelector('.groom-parents'),
+          opacity: [0, 1],
+          translateX: [-18, 0],
+          duration: 750
+        }, '-=400')
+        .add({
+          targets: scene.querySelectorAll('.groom-caption .fun-facts li'),
+          opacity: [0, 1],
+          scale: [0.8, 1],
+          duration: 500,
+          delay: anime.stagger(80),
+          easing: 'easeOutBack'
+        }, '-=300');
+    } else if (id === 'scene-5') {
+      anime.timeline({ easing: 'easeOutCubic' })
+        .add({
+          targets: scene.querySelector('.couple-caption'),
+          opacity: [0, 1],
+          translateY: [25, 0],
+          duration: 850
+        })
+        .add({
+          targets: scene.querySelectorAll('.couple-caption .eyebrow, .couple-caption h2, .couple-caption p'),
+          opacity: [0, 1],
+          translateY: [14, 0],
+          duration: 700,
+          delay: anime.stagger(110)
+        }, '-=600')
+        .add({
+          targets: scene.querySelector('.schedule-link'),
+          opacity: [0, 1],
+          scale: [0.9, 1],
+          duration: 650,
+          easing: 'easeOutBack'
+        }, '-=300');
+    } else if (id === 'scene-6') {
+      anime.timeline({ easing: 'easeOutCubic' })
+        .add({
+          targets: scene.querySelector('.schedule-panel'),
+          opacity: [0, 1],
+          translateY: [32, 0],
+          duration: 900
+        })
+        .add({
+          targets: scene.querySelectorAll('.panel-header .ganesha-small, .panel-header .eyebrow, .schedule-panel h2, .panel-header .golden-flourish'),
+          opacity: [0, 1],
+          translateY: [14, 0],
+          duration: 700,
+          delay: anime.stagger(90)
+        }, '-=500')
+        .add({
+          targets: scene.querySelectorAll('.schedule-card'),
+          opacity: [0, 1],
+          translateY: [24, 0],
+          scale: [0.96, 1],
+          duration: 750,
+          delay: anime.stagger(130),
+          easing: 'easeOutBack'
+        }, '-=400')
+        .add({
+          targets: scene.querySelector('.venue-container'),
+          opacity: [0, 1],
+          translateY: [18, 0],
+          duration: 750
+        }, '-=300')
+        .add({
+          targets: scene.querySelectorAll('.compliments-block, .rsvp-block'),
+          opacity: [0, 1],
+          translateY: [14, 0],
+          duration: 650,
+          delay: anime.stagger(120)
+        }, '-=300')
+        .add({
+          targets: scene.querySelector('.blessing-footer'),
+          opacity: [0, 1],
+          translateY: [10, 0],
+          duration: 600
+        }, '-=200');
+    }
+  }
 
   /* =========================================================================
      SCENE INTERSECTION OBSERVER
@@ -8,10 +196,10 @@
   const sceneObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('is-settled');
+        animateScene(entry.target);
       }
     });
-  }, { threshold: 0.45 });
+  }, { threshold: 0.28 });
 
   scenes.forEach(scene => sceneObserver.observe(scene));
 
@@ -76,17 +264,36 @@
   window.addEventListener('scroll', () => {
     updatePhotoParallax();
     updateBackdrop();
+    updateScrollProgress();
   }, { passive: true });
 
   /* =========================================================================
-     SMOOTH SCROLL FOR ANCHOR LINKS
+     ANIME.JS BUTTER-SMOOTH ANCHOR SCROLLING
      ========================================================================= */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
-      const target = document.querySelector(this.getAttribute('href'));
+      const targetId = this.getAttribute('href');
+      if (targetId === '#' || !targetId) return;
+      const target = document.querySelector(targetId);
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const startY = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = target.getBoundingClientRect().top + startY;
+        const scrollObj = { y: startY };
+
+        if (typeof anime !== 'undefined') {
+          anime({
+            targets: scrollObj,
+            y: targetY,
+            duration: 1100,
+            easing: 'easeInOutCubic',
+            update: () => {
+              window.scrollTo(0, scrollObj.y);
+            }
+          });
+        } else {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     });
   });
